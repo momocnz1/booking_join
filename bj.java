@@ -3,7 +3,9 @@ import java.util.*;
 public class bj{
     public static void main(String[] args) {
     Roomsearch roomSearch = new Roomsearch();
-    String province = "Bangkok";
+
+    String province = "Nan";
+    
     Hotel availableroom1 = roomSearch.findAvailableRoom1(province);
     Resort availableroom2 = roomSearch.findAvailableRoom2(province);
     Apartment availableroom3 = roomSearch.findAvailableRoom3(province);
@@ -41,8 +43,31 @@ public class bj{
         else {
             System.out.println("There are no apartments in " + province);
         }
+
+        Scanner s = new Scanner(System.in);
+        System.out.print("Please enter the name of the guest : ");
+        String guestName = s.nextLine();
+        System.out.print("You entered room number : ");
+        int roomNum = s.nextInt();
+        Room room = new Room(roomNum);
+        Reservation reservation = new Reservation(room, guestName);
+        s.close();
+
+        int reservationId = reservation.getReservationId();
+        System.out.println("Reservation ID: " + reservationId);
+        Room reservedRoom = reservation.getRoom();
+        int roomNumber = reservedRoom.getRoomNum();
+        System.out.println("Reserved Room Number: " + roomNumber);
+        String guestname = reservation.getGuestName();
+        System.out.println("Guest Name: " + guestname);
+        boolean isReserved = reservedRoom.isReserved();
+        System.out.println("Is Room Reserved: " + isReserved);
+
+        Reservation reservation1 = new Reservation(room, "John Doe");
+        reservation1.cancelReservation();
+
+    
     }
-/* */
 }
 class Roomsearch{
     private List<Hotel> rooms;
@@ -129,7 +154,6 @@ class Roomsearch{
         rooms.add(new Hotel("Yala", 1700, 440, 440));
         rooms.add(new Hotel("Narathiwat", 2300, 240, 40));
         
-
         resorts.add(new Resort("Bangkok", 4580, 90, 20, 120, 70));
         resorts.add(new Resort("Samut Prakan", 1000, 20, 7, 10, 10));
         resorts.add(new Resort("Nonthaburi", 3500, 50, 0, 30, 20));
@@ -288,6 +312,7 @@ class Roomsearch{
         apartments.add(new Apartment("Yala", 1700, 440, 4,12,true));
         apartments.add(new Apartment("Narathiwat", 2300, 240, 0,12,false));
     }
+    
     public Hotel findAvailableRoom1(String province){
         for(Hotel room : rooms){
             if (room.getProvince().equals(province) && room.getAvailablerooms() >= 0) {
@@ -296,6 +321,7 @@ class Roomsearch{
         }
         return null;
     }
+    
     private List<Resort> resorts;
     public Resort findAvailableRoom2(String province){
          for(Resort room : resorts){
@@ -305,6 +331,7 @@ class Roomsearch{
         }
         return null;
     }
+    
     private List<Apartment> apartments;
     public Apartment findAvailableRoom3(String province){
          for(Apartment room : apartments){
@@ -314,6 +341,7 @@ class Roomsearch{
         return null;
     }
 }
+
 class Hotel{
     private String province;
     private int price;
@@ -338,6 +366,7 @@ class Hotel{
         return availablerooms;
     }
 }
+
 class Resort extends Hotel{
     private int numRooms;
     private int numPools;
@@ -353,6 +382,7 @@ class Resort extends Hotel{
         return numPools;
     }
 }
+
 class Apartment extends Hotel{
     private int numUnits;
     private boolean hasParking;
@@ -369,3 +399,53 @@ class Apartment extends Hotel{
     }
 }
 
+class Room{
+    private int roomNum;
+    private boolean isReserved;
+
+    Room(int roomNum){
+        this.roomNum = roomNum;
+        this.isReserved = false;
+    }
+    public int getRoomNum(){
+        return roomNum;
+    }
+    public boolean isReserved(){
+        return isReserved;
+    }
+    public void reserveroom(){
+        isReserved = true;
+    }
+    public void cancelReservation(){
+        isReserved = false;
+    }
+}
+
+class Reservation {
+    private static int nextreservationId = 1;
+    private int reservationId;
+    private  Room room;
+    private String guestName;
+    
+    Reservation(Room room,String guestName){
+        this.reservationId = nextreservationId++;
+        this.room = room;
+        this.guestName = guestName;
+        room.reserveroom();
+    }
+     public int getReservationId() {
+        return reservationId;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void cancelReservation() {
+        room.cancelReservation();
+    }
+}
