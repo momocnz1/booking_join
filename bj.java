@@ -4,7 +4,9 @@ public class bj{
     public static void main(String[] args) {
     Roomsearch roomSearch = new Roomsearch();
 
-    String province = "Nan";
+    Scanner p = new Scanner(System.in); 
+    System.out.print("Please enter the province : ");
+    String province = p.nextLine();
     
     Hotel availableroom1 = roomSearch.findAvailableRoom1(province);
     Resort availableroom2 = roomSearch.findAvailableRoom2(province);
